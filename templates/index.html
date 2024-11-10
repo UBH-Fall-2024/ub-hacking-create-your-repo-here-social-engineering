@@ -45,41 +45,9 @@
     
     <script> 
     function getTop10() {
-      fetch('http://127.0.0.1:5000/get_top10')
-    .then(response => {
-      if (response.status === 302) {
-        // If the server responds with a 302 redirect, navigate to the redirect URL
-        window.location.href = response.url;  // This will take the user to the Spotify login page
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      return response.json();  // Parse the JSON response from the backend
-    })
-    .then(data => {
-      console.log('Top 10:', data);  // Log the response to the console
-
-      // Clear previous results
-      document.getElementById('result').innerHTML = '';
-
-      // Loop through the songs and dynamically generate HTML for each one
-      data.forEach(song => {
-        const songElement = document.createElement('div');
-        songElement.innerHTML = `
-          <img src="${song.album_image_url}" width="200" height="200">
-          <br>
-          ${song.name}: ${song.artist}
-        `;
-        document.getElementById('result').appendChild(songElement);
-      });
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
-    }
+            // Redirect to the new page using Flask route
+            window.location.href = '/get_top10'; //.html?
+        }
     </script>
 
     <script> function get50(){

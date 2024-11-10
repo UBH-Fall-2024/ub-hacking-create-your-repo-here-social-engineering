@@ -37,38 +37,79 @@ def home():
         auth_url = sp_oauth.get_authorize_url()
         return redirect(auth_url)
     return redirect(url_for('get_top50'))
+    #return render_template('index.html')
 
 @app.route('/callback')
 def callback():
     sp_oauth.get_access_token(request.args['code'])
-    return render_template('index.html')
-    #return redirect(url_for('get_top50'))
+    #return render_template('index.html')
+    return redirect(url_for('get_top50'))
+
+@app.route("/top50")
+def show_top50():
+    #songs_html = get_top50()  # Call the function to get the HTML content
+    return render_template("top50.html", songs_html=get_top50())
 
 #get user's playlist and print them out
+# @app.route('/get_top50')
+# def get_top50():
+#     if not sp_oauth.validate_token(cache_handler.get_cached_token()): #if not logged in, get tohem to
+#         auth_url = sp_oauth.get_authorize_url()
+#         return redirect(auth_url)
+
+#     songs = sp.current_user_top_tracks(time_range='Long_term', limit=50)
+#     #songs_html = '<br>'.join([item['name'] + ": " + item['artists'][0]['name'] + f'<img src={item['album']['images'][0]['url']} width=200 height=200>' for item in songs['items']]) #alt='{item['name']}'
+#     songs_html = ""
+
+#     randList = songs['items']
+#     random.shuffle(randList)
+        
+#     for item in randList:
+        
+#         song_name = item['name']
+#         artist_name = item['artists'][0]['name']
+#         album_image_url = item['album']['images'][0]['url']
+#         #songs_html += "<br>"
+#         song_html = f"<br> <img src={album_image_url} width=200 height=200> <br> {song_name}: {artist_name} "
+        
+#         songs_html += "<br>"  # Add line break between songs
+#         songs_html += song_html
+    
+#     return songs_html
+
+
 @app.route('/get_top50')
 def get_top50():
-    if not sp_oauth.validate_token(cache_handler.get_cached_token()): #if not logged in, get tohem to
+    # Check if the user is logged in
+    if not sp_oauth.validate_token(cache_handler.get_cached_token()):
         auth_url = sp_oauth.get_authorize_url()
         return redirect(auth_url)
 
+    # Get the user's top 50 tracks
     songs = sp.current_user_top_tracks(time_range='Long_term', limit=50)
-    #songs_html = '<br>'.join([item['name'] + ": " + item['artists'][0]['name'] + f'<img src={item['album']['images'][0]['url']} width=200 height=200>' for item in songs['items']]) #alt='{item['name']}'
-    songs_html = ""
+    songs_html = ""  # Initialize the HTML string
 
+    # Shuffle the list of songs for randomness
     randList = songs['items']
     random.shuffle(randList)
-        
+
+    # Loop through each song and create HTML for each one
     for item in randList:
-        
         song_name = item['name']
         artist_name = item['artists'][0]['name']
         album_image_url = item['album']['images'][0]['url']
-        #songs_html += "<br>"
-        song_html = f"<br> <img src={album_image_url} width=200 height=200> <br> {song_name}: {artist_name} "
-        
-        songs_html += "<br>"  # Add line break between songs
+
+        # Ensure that all HTML tags are properly formatted
+        song_html = f'''
+        <div class="song">
+            <img src="{album_image_url}" width="200" height="200" alt="{song_name}">
+            <div>{song_name}: {artist_name}</div>
+        </div>
+        '''
+
+        # Append the HTML for each song to the overall songs_html
         songs_html += song_html
-    
+
     return songs_html
 
 @app.route('/get_top10')
