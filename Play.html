@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Size Selector</title>
+  <style>
+    .active {
+      border: 1px inset #DDD;
+      background: rgb(245, 245, 245);
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+    }
+    #slider-container {
+      margin-top: 20px;
+    }
+    #slider {
+      width: 300px;
+      transition: transform 0.1s ease; /* Smooth transition for rotation */
+    }
+    #background-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="header">Choose a Size</h1> <!-- Header to update -->
+  <div id="slider-container">
+    <label for="slider">Value: <span id="slider-value">10</span></label>
+    <input type="range" id="slider" min="0" max="20" value="10">
+  </div>
+
+  <!-- Buttons for S, M, and L options -->
+  <button data-value="S">S</button>
+  <button data-value="M">M</button>
+  <button data-value="L">L</button>
+
+  <video id="background-video" autoplay muted loop>
+    <source src="getmyfb.com_1731217755927.mp4" type="video/mp4">
+  </video>
+
+  <script>
+    let selectedSize = "";  // Variable to hold the current selected size
+    let sliderValue = 10;   // Variable to hold the slider value
+    const header = document.getElementById("header"); // Header element to update
+    const slider = document.getElementById("slider"); // Slider element
+    const sliderValueDisplay = document.getElementById("slider-value"); // Span to display slider value
+
+    const btns = document.querySelectorAll("button");
+    btns.forEach((el, i) => {
+      el.onclick = () => {
+        el.classList.add("active");
+        selectedSize = el.getAttribute("data-value");  // Update the selected size variable
+        updateHeader();  // Update the header with the new selection
+
+        btns.forEach((el, j) => {
+          if (i !== j) {
+            el.classList.remove("active");
+          }
+        });
+      };
+    });
+
+    // Update the slider value, tilt, and header text when the slider is moved
+    slider.oninput = () => {
+      sliderValue = slider.value;  // Update the slider value variable
+      sliderValueDisplay.innerText = sliderValue; // Display the current slider value
+      updateHeader();  // Update the header with the new slider value
+      updateSliderTilt(sliderValue); // Update the slider tilt
+    };
+
+    // Function to update the header with selected size and slider value
+    function updateHeader() {
+      header.innerText = `Selected Size: ${selectedSize}, Value: ${sliderValue}`;
+    }
+
+    // Function to tilt the slider based on its value
+    function updateSliderTilt(value) {
+      const maxTilt = 15; // Maximum tilt angle in degrees
+      const tiltAngle = (value - 10) * (maxTilt / 10); // Calculate tilt based on value
+      slider.style.transform = `rotate(${tiltAngle}deg)`; // Apply tilt
+    }
+
+    // Initial tilt based on default slider value
+    updateSliderTilt(slider.value);
+  </script>
+</body>
+</html>
+
