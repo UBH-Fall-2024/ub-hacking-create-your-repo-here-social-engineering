@@ -125,7 +125,14 @@ def get_topX(songCount, length):
     
     randList = songs['items']
     random.shuffle(randList)
-        
+
+    if (length == "Several Years"):
+        length = "long_term"
+    else if (length == "6 Months"):
+        length = "medium_term"
+    else:
+        length = "short_term"
+
     for item in randList:
         
         song_name = item['name']
@@ -171,6 +178,9 @@ def logout():
     session.clear
     return redirect(url_for('home'))
 
+
+if __name__ == '__main__':
+    app.run(debug = True)
 
 if __name__ == '__main__':
     app.run(debug = True)
