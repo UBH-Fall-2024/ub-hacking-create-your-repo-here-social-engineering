@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+    
+    .button {
+        background-color: #1db954;
+        border: none;
+        color: black;
+        padding: 45px 128px;
+        position: absolute;
+        left: 50%; /* Move the button's left edge to the center of the parent */
+        top:50%;
+        transform: translateX(-50%);
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 64   px;
+        margin: 4px 2px;
+        cursor: pointer;
+                
+      }
+      h1{
+        text-align: center;
+
+        margin: auto;
+      }
+      h2{
+        text-align: center;
+        font-size: medium;
+        margin: auto;
+      }
+    </style>
+    <meta charset="UTF-8">
+    <script type = "text/javascript" src="functions.js"></script>
+</head>
+<body style="background-color: white; color: #1db954;">
+    <h1>Spotify Music Friend Tester</h1>
+    <h2 > How Well do you know your friends Music taste?</h2>
+    <div style="text-align: center;">
+        <img src="Spotify-Logo.wine.png" alt="Spotify Logo" width="600" height="400" style="display: block; margin: 0 auto; margin-top: -85px;">
+    </div>
+    <button onclick="getTop10()">Get Top 10</button>
+    <button onclick="getTop50()">Get Top 50</button>
+    
+    <script> 
+    function getTop10() {
+      fetch('http://127.0.0.1:5000/get_top10')
+    .then(response => {
+      if (response.status === 302) {
+        // If the server responds with a 302 redirect, navigate to the redirect URL
+        window.location.href = response.url;  // This will take the user to the Spotify login page
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      return response.json();  // Parse the JSON response from the backend
+    })
+    .then(data => {
+      console.log('Top 10:', data);  // Log the response to the console
+
+      // Clear previous results
+      document.getElementById('result').innerHTML = '';
+
+      // Loop through the songs and dynamically generate HTML for each one
+      data.forEach(song => {
+        const songElement = document.createElement('div');
+        songElement.innerHTML = `
+          <img src="${song.album_image_url}" width="200" height="200">
+          <br>
+          ${song.name}: ${song.artist}
+        `;
+        document.getElementById('result').appendChild(songElement);
+      });
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+    }
+    </script>
+
+    <script> function get50(){
+      fetch('/get_top50')
+    }</script>
+
+    <div id="result" style="text-align: center;">placeholder</div>
+</body>
+</html>

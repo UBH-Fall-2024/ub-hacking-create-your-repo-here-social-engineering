@@ -5,7 +5,7 @@
 # pip install -r .\requirements.txt OR
 
 import os, json, random
-from flask import Flask, request, redirect, session, url_for
+from flask import Flask, request, redirect, session, url_for, render_template
 
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
@@ -41,7 +41,8 @@ def home():
 @app.route('/callback')
 def callback():
     sp_oauth.get_access_token(request.args['code'])
-    return redirect(url_for('get_top50'))
+    return render_template('index.html')
+    #return redirect(url_for('get_top50'))
 
 #get user's playlist and print them out
 @app.route('/get_top50')
